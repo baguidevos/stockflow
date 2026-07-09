@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\ActivityLogs\Tables;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Actions\ViewAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -18,7 +18,8 @@ class ActivityLogsTable
             ->columns([
                 TextColumn::make('created_at')->label('Date')->dateTime('d/m/Y H:i:s')->sortable(),
                 TextColumn::make('user.name')->label('Utilisateur')->searchable()->sortable(),
-                BadgeColumn::make('action')->label('Action')
+                TextColumn::make('action')->label('Action')
+                ->badge()
                     ->colors([
                         'success' => 'create',
                         'warning' => 'update',

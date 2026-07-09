@@ -4,11 +4,12 @@ namespace App\Filament\Resources\SupplierOrders\Schemas;
 
 use App\Models\SupplierOrder;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema;
+
 
 class SupplierOrderForm
 {

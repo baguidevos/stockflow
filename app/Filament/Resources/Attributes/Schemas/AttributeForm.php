@@ -7,7 +7,7 @@ use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Set;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -18,7 +18,7 @@ class AttributeForm
         return $schema->components([
             Select::make('attribute_group_id')
                 ->label("Groupe d'attributs")
-                ->relationship('attributeGroup', 'name')
+                ->relationship('group', 'name')
                 ->searchable()->preload()->required(),
             TextInput::make('name')
                 ->label('Nom')

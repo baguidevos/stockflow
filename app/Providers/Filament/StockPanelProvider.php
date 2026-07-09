@@ -27,6 +27,7 @@ class StockPanelProvider extends PanelProvider
             ->default()
             ->id('stock')
             ->path('stock')
+            ->registration()
             ->login()
             ->colors([
                 'primary' => Color::Amber,

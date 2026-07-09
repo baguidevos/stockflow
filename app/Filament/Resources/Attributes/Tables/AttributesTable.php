@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Attributes\Tables;
 
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\IconColumn;
@@ -20,9 +20,10 @@ class AttributesTable
     {
         return $table
             ->columns([
-                TextColumn::make('attributeGroup.name')->label('Groupe')->sortable()->searchable(),
+                TextColumn::make('group.name')->label('Groupe')->sortable()->searchable(),
                 TextColumn::make('name')->label('Nom')->searchable()->sortable(),
-                BadgeColumn::make('type')->label('Type')
+                TextColumn::make('type')->label('Type')
+                ->badge()
                     ->colors([
                         'primary' => 'select',
                         'warning' => 'color',
@@ -36,7 +37,7 @@ class AttributesTable
             ])
             ->filters([
                 SelectFilter::make('attribute_group_id')
-                    ->label('Groupe')->relationship('attributeGroup', 'name'),
+                    ->label('Groupe')->relationship('group', 'name'),
                 TernaryFilter::make('is_active')->label('Actif'),
             ])
             ->actions([EditAction::make(), DeleteAction::make()])

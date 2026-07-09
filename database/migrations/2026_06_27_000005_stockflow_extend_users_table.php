@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('warehouse_id')->nullable()
                   ->after('phone');
             $table->string('avatar')->nullable()->after('warehouse_id');
-            $table->rememberToken();
+
         });
     }
 
@@ -26,7 +26,6 @@ return new class extends Migration
                 'phone',
                 'warehouse_id',
                 'avatar',
-                'remember_token'
             ]);
         });
     }

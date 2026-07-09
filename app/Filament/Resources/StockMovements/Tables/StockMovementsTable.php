@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\StockMovements\Tables;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Actions\ViewAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
