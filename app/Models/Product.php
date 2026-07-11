@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Relations;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $table = 'products';
 
@@ -42,9 +43,8 @@ class Product extends Model
         'variant_max_price',
         'stock_status',
         'is_active',
-        'track_inventory'
+        'track_inventory',
     ];
-
 
     protected $casts = [
         'specifications' => 'array',
@@ -61,7 +61,7 @@ class Product extends Model
         'variant_max_price' => 'decimal:4',
         'has_variants' => 'boolean',
         'is_active' => 'boolean',
-        'track_inventory' => 'boolean'
+        'track_inventory' => 'boolean',
     ];
 
     use SoftDeletes;
@@ -117,6 +117,7 @@ class Product extends Model
     }
 
     public const TYPE_SIMPLE = 'TYPE_SIMPLE';
+
     public const TYPE_CONFIGURABLE = 'TYPE_CONFIGURABLE';
 
     public function scopesimple($query)
@@ -144,26 +145,6 @@ class Product extends Model
         // TODO: Implémenter le scope
     }
 
-    public function scopeinStock($query)
-    {
-        // TODO: Implémenter le scope
-    }
-
-    public function scopelowStock($query)
-    {
-        // TODO: Implémenter le scope
-    }
-
-    public function scopeoutOfStock($query)
-    {
-        // TODO: Implémenter le scope
-    }
-
-    public function getAvailableQuantityAttribute()
-    {
-        // TODO: Implémenter l'accessor
-    }
-
     public function getTotalVariantStockAttribute()
     {
         // TODO: Implémenter l'accessor
@@ -179,11 +160,6 @@ class Product extends Model
         // TODO: Implémenter l'accessor
     }
 
-    public function updateStockStatus()
-    {
-        // TODO: Implémenter la méthode
-    }
-
     public function generateVariantSku()
     {
         // TODO: Implémenter la méthode
@@ -192,5 +168,88 @@ class Product extends Model
     public function hasVariantWithAttributes()
     {
         // TODO: Implémenter la méthode
+    }
+
+    // Médias
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+
+        $this->addMediaCollection('documents')
+            ->acceptsMimeTypes(['application/pdf']);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnail')
+            ->width(300)
+            ->height(300)
+            ->sharpen(10);
+
+        $this->addMediaConversion('large')
+            ->width(1200)
+            ->height(1200)
+            ->sharpen(10);
+    }
+
+    // Accessors pour les médias
+    public function getMainImageAttribute()
+    {
+        return $this->getFirstMediaUrl('images', 'thumbnail');
+    }
+
+    public function getImagesAttribute()
+    {
+        return $this->getMedia('images');
+    }
+
+    // Computed: Quantité disponible
+    public function getAvailableQuantityAttribute()
+    {
+        return $this->stock_quantity - $this->reserved_quantity;
+    }
+
+    // Mise à jour automatique du statut
+    public function updateStockStatus(): void
+    {
+        if ($this->available_quantity <= 0) {
+            $this->stock_status = 'out_of_stock';
+        } elseif ($this->available_quantity <= $this->min_stock_level) {
+            $this->stock_status = 'low_stock';
+        } else {
+            $this->stock_status = 'in_stock';
+        }
+        $this->saveQuietly();
+    }
+
+    // Scopes
+    public function scopeInStock($query)
+    {
+        return $query->where('stock_status', 'in_stock');
+    }
+
+    public function scopeLowStock($query)
+    {
+        return $query->where('stock_status', 'low_stock');
+    }
+
+    public function scopeOutOfStock($query)
+    {
+        return $query->where('stock_status', 'out_of_stock');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeSearch($query, $term)
+    {
+        return $query->where(function ($q) use ($term) {
+            $q->where('name', 'like', "%{$term}%")
+                ->orWhere('sku', 'like', "%{$term}%")
+                ->orWhere('barcode', 'like', "%{$term}%");
+        });
     }
 }

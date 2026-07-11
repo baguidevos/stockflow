@@ -7,11 +7,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "bezhansalleh/filament-shield": "*",
         "filament/filament": "*",
+        "janczakb/filament-flex-fields": "*",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
         "livewire/blaze": "^1.0",
-        "livewire/livewire": "^4.1"
+        "livewire/livewire": "^4.1",
+        "spatie/laravel-medialibrary": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

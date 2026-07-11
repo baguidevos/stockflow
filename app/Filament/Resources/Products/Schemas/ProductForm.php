@@ -3,6 +3,10 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use App\Models\Product;
+use Bjanczak\FilamentFlexFields\Filament\Forms\Components\ChoiceCards;
+use Bjanczak\FilamentFlexFields\Filament\Forms\Components\MatrixChoiceField;
+use Bjanczak\FilamentFlexFields\Filament\Forms\Components\PhoneField;
+use Bjanczak\FilamentFlexFields\Filament\Forms\Components\TitleSlugField;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -23,8 +27,7 @@ class ProductForm
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn (string $operation, $state, Set $set) =>
-                        $operation === 'create' ? $set('slug', Str::slug($state)) : null
+                    ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null
                     )
                     ->columnSpanFull(),
                 TextInput::make('sku')
@@ -78,8 +81,8 @@ class ProductForm
                 Select::make('stock_status')
                     ->label('Statut stock')
                     ->options([
-                        'in_stock'     => 'En stock',
-                        'low_stock'    => 'Stock faible',
+                        'in_stock' => 'En stock',
+                        'low_stock' => 'Stock faible',
                         'out_of_stock' => 'Rupture de stock',
                     ])->default('in_stock'),
                 Toggle::make('is_active')->label('Actif')->default(true),

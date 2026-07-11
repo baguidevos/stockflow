@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Bjanczak\FilamentFlexFields\FilamentFlexFieldsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -10,6 +11,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -28,6 +30,8 @@ class StockPanelProvider extends PanelProvider
             ->id('stock')
             ->path('stock')
             ->registration()
+            ->maxContentWidth(Width::Full)
+            ->sidebarFullyCollapsibleOnDesktop()
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -37,6 +41,7 @@ class StockPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
+            ->plugin(FilamentFlexFieldsPlugin::make())
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
